@@ -46,7 +46,7 @@ const Header = () => {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="ml-auto">
+          <Nav className="ms-auto">
             {!isLoggedIn() && (
               <Nav.Link onClick={() => navigate("/signUp")}>Sign Up</Nav.Link>
             )}

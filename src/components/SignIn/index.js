@@ -13,13 +13,13 @@ import {
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 
+import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Toast from "react-bootstrap/Toast";
 
-import jwt_decode from "jwt-decode";
+import "./index.css";
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -57,7 +57,6 @@ const Signin = () => {
         navigate(`/home`);
       })
       .catch((err) => {
-        alert(err);
         if (err == "FirebaseError: Firebase: Error (auth/user-not-found).") {
           setError("Username is not registered");
         } else if (
@@ -71,33 +70,46 @@ const Signin = () => {
     setSentData({ emailItem: "", passwordItem: "" });
   };
 
-  const signInWithGoogle = () => {
-    signInWithPopup(auth, provider)
-      .then((response) => {
-        if (response.user) {
-          const responseData = JSON.stringify({
-            token: response.user.accessToken,
-            username: response.user.displayName,
-            uid: response.user.uid,
-          });
-          localStorage.setItem("_token", responseData);
-          console.log(response.user);
-          setClient(response.user.uid);
-        }
-        // navigate(`/home`);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  };
+  // const signInWithGoogle = () => {
+  //   signInWithPopup(auth, provider)
+  //     .then((response) => {
+  //       if (response.user) {
+  //         const responseData = JSON.stringify({
+  //           token: response.user.accessToken,
+  //           username: response.user.displayName,
+  //           uid: response.user.uid,
+  //         });
+  //         localStorage.setItem("_token", responseData);
+  //         console.log(response.user);
+  //         setClient(response.user.uid);
+  //       }
+  //       // navigate(`/home`);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message);
+  //     });
+  // };
 
   const handleCallbackResponse = (response) => {
     const idToken = response.credential;
     const credential = GoogleAuthProvider.credential(idToken);
     console.log(credential);
-    
 
-    // navigate(`/home`);
+    const endTimer = setTimeout(() => {
+      let user = auth.currentUser;
+      console.log(user);
+      console.log(user.uid);
+      const responseData = JSON.stringify({
+        token: user.accessToken,
+        username: user.displayName,
+        uid: user.uid,
+      });
+      console.log(responseData);
+      localStorage.setItem("_token", responseData);
+      setClient(user.uid);
+      navigate(`/home`);
+      clearTimeout(endTimer);
+    }, 2000);
     signInWithCredential(auth, credential).catch((error) => {
       // Handle Errors here.
       const errorCode = error.code;
@@ -114,79 +126,85 @@ const Signin = () => {
     /*global google */
     google.accounts.id.initialize({
       client_id: `359767345663-1rfm3quklsmrocs5299euh61hjlpqbca.apps.googleusercontent.com`,
-      callback: handleCallbackResponse
+      callback: handleCallbackResponse,
     });
     google.accounts.id.renderButton(document.getElementById("singleDiv"), {
       theme: "outline",
       size: "large",
     });
-    // google.accounts.id.prompt();
   }, []);
-
-  const getUserData = () => {
-    let user = auth.currentUser;
-    console.log(user)
-    // localStorage.setItem("_token", idToken);
-  }
 
   return (
     <>
-      <Container className="mt-3">
-        <Form onSubmit={sendData1}>
-          <h3 className="text-center">Sign In Form</h3>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              name="emailItem"
-              value={sentdata.emailItem}
-              onChange={(event) => handleInput1(event)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              name="passwordItem"
-              value={sentdata.passwordItem}
-              onChange={(event) => handleInput1(event)}
-              required
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-        <hr />
-        <div className="row">
-          <div className="col-12 d-flex flex-column justify-center">
-            <h4 className="text-center">Sign In With Google</h4>
-            <div id="singleDiv"></div>
-            {/* <Button
-              variant="inherit"
-              type="button"
-              className="align-self-center"
-              onClick={signInWithGoogle}
+      <Container>
+        
+        <Row className="my-5">
+          <Col classNam="col-0 col-lg-3"></Col>
+
+          <Col className="col-12 col-lg-6 shadow shadow-inset p-3 bg-white rounded">
+            <Form onSubmit={sendData1}>
+              <h3>Login</h3>
+              <div className="form-floating mb-3">
+                <input
+                  type="email"
+                  className="form-control"
+                  id="floatingInput"
+                  placeholder="name@example.com"
+                  name="emailItem"
+                  value={sentdata.emailItem}
+                  onChange={(event) => handleInput1(event)}
+                  required
+                />
+                <label for="floatingInput">Email address</label>
+              </div>
+
+              <div className="form-floating mb-3">
+                <input
+                  type="password"
+                  className="form-control"
+                  id="floatingInput"
+                  placeholder="Password"
+                  name="passwordItem"
+                  value={sentdata.passwordItem}
+                  onChange={(event) => handleInput1(event)}
+                  required
+                />
+                <label for="floatingInput">Password</label>
+              </div>
+              <Button variant="primary" type="submit" className="w-100">
+                LOGIN
+              </Button>
+            </Form>
+
+            <h6 className="dividerLine text-muted"><span>OR</span></h6>
+            <ul className="list-group list-group-flush my-2">
+            
+              <li id="singleDiv" className="list-group-item  py-3 px-0"></li>
+              <li className="list-group-item  py-3 px-0">Git Hub</li>
+            </ul>
+          </Col>
+
+
+          
+
+
+
+          <Col classNam="col-0 col-lg-3"></Col>
+        </Row>
+        <Row>
+          <Col className="col-12 d-flex flex-column align-items-center mt-5">
+            <Toast
+              onClose={() => setShow(false)}
+              show={show}
+              delay={2000}
+              autohide
+              bg="danger"
+              className="w-50"
             >
-              <FcGoogle size={30} />
-            </Button> */}
-          </div>
-        </div>
-        <button onClick={getUserData}>Get User Info</button>
-        <Col className="d-flex flex-column align-items-end mt-5">
-          <Toast
-            onClose={() => setShow(false)}
-            show={show}
-            delay={2000}
-            autohide
-            bg="danger"
-          >
-            <Toast.Body className="text-white">{error}</Toast.Body>
-          </Toast>
-        </Col>
+              <Toast.Body className="text-white text-center">{error}</Toast.Body>
+            </Toast>
+          </Col>
+        </Row>
       </Container>
     </>
   );
