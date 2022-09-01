@@ -1,0 +1,11 @@
+.rounded-button{
+    border-radius: 50% !important; 
+}
+
+.rounded-button:hover{
+    color: white;
+}
+
+.card-width{
+    width: 14rem !important;
+}
