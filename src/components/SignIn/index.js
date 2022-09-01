@@ -1,11 +1,13 @@
 import React from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { app } from "../firebaseConfig";
 import {
   getAuth,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithCredential,
   GoogleAuthProvider,
+  credentialFromError,
 } from "firebase/auth";
 
 import Container from "react-bootstrap/Container";
@@ -17,8 +19,7 @@ import { useNavigate } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Toast from "react-bootstrap/Toast";
 
-import jwt_decode from 'jwt-decode';
-
+import jwt_decode from "jwt-decode";
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -27,9 +28,9 @@ const Signin = () => {
   const provider = new GoogleAuthProvider();
 
   const [show, setShow] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const [client,setClient] = useState('');
+  const [client, setClient] = useState("");
 
   const [sentdata, setSentData] = useState({
     emailItem: "",
@@ -49,29 +50,26 @@ const Signin = () => {
           const responseData = JSON.stringify({
             token: response.user.accessToken,
             username: response.user.displayName,
-            uid: response.user.uid
+            uid: response.user.uid,
           });
           localStorage.setItem("_token", responseData);
         }
         navigate(`/home`);
       })
       .catch((err) => {
-        alert(err)
-        if(err == "FirebaseError: Firebase: Error (auth/user-not-found)."){
-          setError("Username is not registered")
+        alert(err);
+        if (err == "FirebaseError: Firebase: Error (auth/user-not-found).") {
+          setError("Username is not registered");
+        } else if (
+          err == "FirebaseError: Firebase: Error (auth/wrong-password)."
+        ) {
+          setError("Enter Valid Password");
         }
-        else if(err == "FirebaseError: Firebase: Error (auth/wrong-password)."){
-          setError("Enter Valid Password")
-        }
-        setShow(true)
+        setShow(true);
       });
 
     setSentData({ emailItem: "", passwordItem: "" });
   };
-
-  // FirebaseError: Firebase: Error (auth/user-not-found).
-  // FirebaseError: Firebase: Error (auth/user-not-found).
-  // FirebaseError: Firebase: Error (auth/wrong-password).
 
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
@@ -80,41 +78,56 @@ const Signin = () => {
           const responseData = JSON.stringify({
             token: response.user.accessToken,
             username: response.user.displayName,
-            uid: response.user.uid
+            uid: response.user.uid,
           });
           localStorage.setItem("_token", responseData);
-          console.log(response.user)
-          setClient(response.user.uid)
-          
+          console.log(response.user);
+          setClient(response.user.uid);
         }
         // navigate(`/home`);
       })
       .catch((err) => {
         console.log(err.message);
       });
-  }
+  };
 
-  const handleCallbackResponse = () => {
-    console.log("responsed");
-    // const hidden_data = jwt_decode(data.token);
-    console.log(client)
-  }
+  const handleCallbackResponse = (response) => {
+    const idToken = response.credential;
+    const credential = GoogleAuthProvider.credential(idToken);
+    console.log(credential);
+    
+
+    // navigate(`/home`);
+    signInWithCredential(auth, credential).catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The credential that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      // ...
+    });
+  };
 
   useEffect(() => {
     /*global google */
     google.accounts.id.initialize({
       client_id: `359767345663-1rfm3quklsmrocs5299euh61hjlpqbca.apps.googleusercontent.com`,
-      })
-      // 
-      //806220621824-lksaj1upiicup1ln51ucfoai227n91b6.apps.googleusercontent.com
-    google.accounts.id.renderButton(
-    document.getElementById("singleDiv"),
-    {theme:"outline", size: "large"}
-    )
-  }, [])
+      callback: handleCallbackResponse
+    });
+    google.accounts.id.renderButton(document.getElementById("singleDiv"), {
+      theme: "outline",
+      size: "large",
+    });
+    // google.accounts.id.prompt();
+  }, []);
 
-
-  
+  const getUserData = () => {
+    let user = auth.currentUser;
+    console.log(user)
+    // localStorage.setItem("_token", idToken);
+  }
 
   return (
     <>
@@ -152,29 +165,28 @@ const Signin = () => {
           <div className="col-12 d-flex flex-column justify-center">
             <h4 className="text-center">Sign In With Google</h4>
             <div id="singleDiv"></div>
-            <Button
+            {/* <Button
               variant="inherit"
               type="button"
               className="align-self-center"
               onClick={signInWithGoogle}
             >
               <FcGoogle size={30} />
-            </Button>
+            </Button> */}
           </div>
         </div>
+        <button onClick={getUserData}>Get User Info</button>
         <Col className="d-flex flex-column align-items-end mt-5">
-            <Toast
-              onClose={() => setShow(false)}
-              show={show}
-              delay={2000}
-              autohide
-              bg="danger"
-            >
-              <Toast.Body className="text-white">
-                {error}
-              </Toast.Body>
-            </Toast>
-          </Col>
+          <Toast
+            onClose={() => setShow(false)}
+            show={show}
+            delay={2000}
+            autohide
+            bg="danger"
+          >
+            <Toast.Body className="text-white">{error}</Toast.Body>
+          </Toast>
+        </Col>
       </Container>
     </>
   );
