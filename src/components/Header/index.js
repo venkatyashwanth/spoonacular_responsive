@@ -12,7 +12,7 @@ import "./index.css";
 const Header = () => {
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("link1");
+  const [activeTab, setActiveTab] = useState("");
 
   const functionSignIn = () => {
     setActiveTab("link1");
