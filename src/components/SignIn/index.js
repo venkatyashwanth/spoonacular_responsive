@@ -4,11 +4,12 @@ import { app } from "../firebaseConfig";
 import {
   getAuth,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signInWithCredential,
   GoogleAuthProvider,
-  credentialFromError,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
+
+import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
 
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
@@ -25,7 +26,10 @@ const Signin = () => {
   const navigate = useNavigate();
 
   const auth = getAuth(app);
+  
   const provider = new GoogleAuthProvider();
+
+  const providerGit = new GithubAuthProvider();
 
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
@@ -68,6 +72,89 @@ const Signin = () => {
       });
 
     setSentData({ emailItem: "", passwordItem: "" });
+  };
+
+  
+
+  const signInWithGitHub = () => {
+    signInWithPopup(auth, providerGit)
+      .then((result) => {
+        console.log(result);
+        const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+
+        // The signed-in user info.
+        const user = result.user;
+        console.log(token);
+        console.log(user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.customData.email;
+        // The AuthCredential type that was used.
+        var credential = GithubAuthProvider.credentialFromError(error);
+        console.log(errorCode);
+        console.log(errorMessage);
+        console.log(email);
+        console.log(credential);
+        if (error.code === "auth/account-exists-with-different-credential") {
+          
+          fetchSignInMethodsForEmail(auth,email).then(function(methods){
+            console.log(methods)
+          })
+        }
+      });
+
+    // Step 1.
+    // User tries to sign in to GitHub.
+    // signInWithPopup(auth, providerGit)
+    //   .catch(function (error) {
+    //     // An error happened.
+    //     if (error.code === "auth/account-exists-with-different-credential") {
+    //       // Step 2.
+    //       // User's email already exists.
+    //       // The pending GitHub credential.
+    //       var pendingCred = error.credential;
+    //       // The provider account's email address.
+    //       var email = error.email;
+    //       console.log(pendingCred)
+    //       console.log(email)
+
+    //       // Get sign-in methods for this email.
+    //       // auth.fetchSignInMethodsForEmail(email).then(function (methods) {
+    //       //   // Step 3.
+    //       //   // If the user has several sign-in methods,
+    //       //   // the first method in the list will be the "recommended" method to use.
+    //       //   // if (methods[0] === "password") {
+    //       //   //   // Asks the user their password.
+    //       //   //   // In real scenario, you should handle this asynchronously.
+    //       //   //   var password = promptUserForPassword(); // TODO: implement promptUserForPassword.
+    //       //   //   auth
+    //       //   //     .signInWithEmailAndPassword(email, password)
+    //       //   //     .then(function (result) {
+    //       //   //       // Step 4a.
+    //       //   //       return result.user.linkWithCredential(pendingCred);
+    //       //   //     })
+    //       //   //     .then(function () {
+    //       //   //       // GitHub account successfully linked to the existing Firebase user.
+    //       //   //       goToApp();
+    //       //   //     });
+    //       //   //   return;
+    //       //   // }
+    //       //   // var provider = getProviderForProviderId(methods[0]);
+    //       //   // auth.signInWithPopup(provider).then(function (result) {
+    //       //   //   result.user
+    //       //   //     .linkAndRetrieveDataWithCredential(pendingCred)
+    //       //   //     .then(function (usercred) {
+    //       //   //       goToApp();
+    //       //   //     });
+    //       //   // });
+    //       // });
+    //     }
+    //   });
   };
 
   // const signInWithGoogle = () => {
@@ -137,13 +224,12 @@ const Signin = () => {
   return (
     <>
       <Container>
-        
         <Row className="my-5">
-          <Col classNam="col-0 col-lg-3"></Col>
+          <Col className="col-0 col-lg-3"></Col>
 
           <Col className="col-12 col-lg-6 shadow shadow-inset p-3 bg-white rounded">
             <Form onSubmit={sendData1}>
-              <h3>Login</h3>
+              <h3 style={{ fontFamily: "Roboto" }}>Login</h3>
               <div className="form-floating mb-3">
                 <input
                   type="email"
@@ -155,41 +241,38 @@ const Signin = () => {
                   onChange={(event) => handleInput1(event)}
                   required
                 />
-                <label for="floatingInput">Email address</label>
+                <label htmlFor="floatingInput">Email address</label>
               </div>
 
               <div className="form-floating mb-3">
                 <input
                   type="password"
                   className="form-control"
-                  id="floatingInput"
+                  id="floatingInputPassword"
                   placeholder="Password"
                   name="passwordItem"
                   value={sentdata.passwordItem}
                   onChange={(event) => handleInput1(event)}
                   required
                 />
-                <label for="floatingInput">Password</label>
+                <label htmlFor="floatingInputPassword">Password</label>
               </div>
               <Button variant="primary" type="submit" className="w-100">
                 LOGIN
               </Button>
             </Form>
 
-            <h6 className="dividerLine text-muted"><span>OR</span></h6>
+            <h6 className="dividerLine text-muted">
+              <span>OR</span>
+            </h6>
             <ul className="list-group list-group-flush my-2">
-            
               <li id="singleDiv" className="list-group-item  py-3 px-0"></li>
-              <li className="list-group-item  py-3 px-0">Git Hub</li>
+              {/* <li className="list-group-item  py-3 px-0">
+                <button onClick={signInWithGitHub}>Git Hub</button>
+              </li> */}
             </ul>
           </Col>
-
-
-          
-
-
-
-          <Col classNam="col-0 col-lg-3"></Col>
+          <Col className="col-0 col-lg-3"></Col>
         </Row>
         <Row>
           <Col className="col-12 d-flex flex-column align-items-center mt-5">
@@ -201,7 +284,9 @@ const Signin = () => {
               bg="danger"
               className="w-50"
             >
-              <Toast.Body className="text-white text-center">{error}</Toast.Body>
+              <Toast.Body className="text-white text-center">
+                {error}
+              </Toast.Body>
             </Toast>
           </Col>
         </Row>

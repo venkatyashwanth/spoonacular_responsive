@@ -3,7 +3,7 @@ const WelcomePage = () => {
   return (
     <>
       <Container>
-        <h3 className="text-center">Welcome Page</h3>
+        <h3 className="text-center">All Your Food. One Place.</h3>
       </Container>
     </>
   );

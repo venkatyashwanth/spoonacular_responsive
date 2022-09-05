@@ -1,0 +1,41 @@
+.active {
+  position: relative;
+}
+
+.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: red;
+  height: 2px;
+  animation-name: variableWidth;
+  animation-duration: 0.3s;
+}
+
+@keyframes variableWidth {
+  from {
+    bottom: -10px;
+  }
+  to {
+    bottom: 0;
+  }
+}
+
+.navigationLink {
+  /* color: blue !important; */
+  position: relative;
+}
+
+.navigationLink:hover::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: red;
+    height: 2px;
+    animation-name: variableWidth;
+  animation-duration: 0.3s;
+}
