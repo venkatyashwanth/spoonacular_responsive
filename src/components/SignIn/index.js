@@ -9,8 +9,6 @@ import {
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
 
-import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-
 import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
 
 import Container from "react-bootstrap/Container";
