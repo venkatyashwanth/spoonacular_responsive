@@ -8,7 +8,7 @@ function isLoggedIn() {
 
 function doLogout() {
   localStorage.removeItem("_token");
-  window.location = "/signIn";
+  window.location = "/";
 }
 
 export { isLoggedIn, doLogout };
