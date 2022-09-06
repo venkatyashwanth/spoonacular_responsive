@@ -70,7 +70,7 @@ const GetTest = () => {
                 <Card.Body>
                   <Card.Title style={{height: "40px"}}>{eachWine.title}</Card.Title>
                   <p>Description: </p>
-                  <Card.Text className="overflow-scroll" style={{maxHeight: "80px"}}>
+                  <Card.Text className="overflow-auto" style={{maxHeight: "80px"}}>
                     {eachWine.description}
                   </Card.Text>
                   <p>Price: {eachWine.price}</p>
