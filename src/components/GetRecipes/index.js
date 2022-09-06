@@ -1,10 +1,11 @@
 import styled from "styled-components";
+import { Container, Col, Row } from "react-bootstrap";
 import Axios from "axios";
 import { useState } from "react";
 
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiHamburger } from "react-icons/gi";
-import RecipeItem from './RecipeItem'
+import RecipeItem from "./RecipeItem";
 import {
   Header,
   AppNameComponent,
@@ -20,13 +21,6 @@ import {
   RecipeHeroImage,
 } from "./StyledRecipeComponent";
 
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-
 const initialImage = () => {
   return (
     <>
@@ -40,9 +34,7 @@ const initialImage = () => {
   );
 };
 
-
 const GetRecipes = () => {
-
   const [searchString, setSearchString] = useState("");
   const [recipeList, setRecipeList] = useState([]);
 
@@ -72,39 +64,42 @@ const GetRecipes = () => {
     setRecipeList(response.data);
   };
 
-
   return (
-    <Container>
+    <>
       <Header>
-        <AppNameComponent>
-          <GiHamburger size={36} style={{ margin: "15px" }} />
-          Get Recipes
-        </AppNameComponent>
+        <Container>
+          <Row>
+          <Col className="d-flex flex-column flex-lg-row justify-content-between">
+            <AppNameComponent>
+              <GiHamburger size={36} style={{marginRight: "10px"}} />
+              Get Recipes
+            </AppNameComponent>
 
-        <SearchComponent>
-          <SearchInput
-            type="search"
-            placeholder="Enter Ingredients"
-            value={searchString}
-            onChange={getSearchValue}
-            onKeyDown={getByEnter}
-          />
-          <AiOutlineSearch style={SearchStyleIcon} onClick={handleSearch} />
-        </SearchComponent>
-      </Header>
-
-      <RecipeListContainer>
-        {recipeList.length === 0
-          ? initialImage()
-          : recipeList.map((recipeObj) => (
-              <RecipeItem
-                recipeObj={recipeObj}
-                key={recipeObj.id}
+            <SearchComponent className="mt-3">
+              <SearchInput
+                type="search"
+                placeholder="Enter Ingredients"
+                value={searchString}
+                onChange={getSearchValue}
+                onKeyDown={getByEnter}
               />
-            ))}
-      </RecipeListContainer>
-    </Container>
+              <AiOutlineSearch style={SearchStyleIcon} onClick={handleSearch} />
+            </SearchComponent>
+          </Col>
+          </Row>
+        </Container>
+      </Header>
+      <Container>
+        <RecipeListContainer>
+          {recipeList.length === 0
+            ? initialImage()
+            : recipeList.map((recipeObj) => (
+                <RecipeItem recipeObj={recipeObj} key={recipeObj.id} />
+              ))}
+        </RecipeListContainer>
+      </Container>
+    </>
   );
 };
 
-export default GetRecipes
+export default GetRecipes;

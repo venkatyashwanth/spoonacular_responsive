@@ -13,6 +13,7 @@ import GetRecipes from "./components/GetRecipes";
 import Products from "./components/Products";
 import Cuisine from "./components/Products/Cuisine";
 import Recipe from "./components/Products/Recipe";
+import CalorieFinder from "./components/CaloriesRecipe";
 import MealPlanner from "./components/MealPlanner";
 import Profiles from "./components/MealPlanner/Profiles";
 import Register from "./components/MealPlanner/Register";
@@ -81,6 +82,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <GetRecipes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              exact
+              path="/calorieFinding"
+              element={
+                <PrivateRoute>
+                  <CalorieFinder />
                 </PrivateRoute>
               }
             />

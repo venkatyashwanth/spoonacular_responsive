@@ -9,6 +9,8 @@ import {
   fetchSignInMethodsForEmail,
 } from "firebase/auth";
 
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+
 import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
 
 import Container from "react-bootstrap/Container";
@@ -26,10 +28,14 @@ const Signin = () => {
   const navigate = useNavigate();
 
   const auth = getAuth(app);
-  
+
   const provider = new GoogleAuthProvider();
 
   const providerGit = new GithubAuthProvider();
+  providerGit.addScope('repo');
+  providerGit.setCustomParameters({
+    'allow_signup': 'false'
+  });
 
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
@@ -74,9 +80,8 @@ const Signin = () => {
     setSentData({ emailItem: "", passwordItem: "" });
   };
 
-  
-
   const signInWithGitHub = () => {
+    console.log(auth.currentUser);
     signInWithPopup(auth, providerGit)
       .then((result) => {
         console.log(result);
@@ -101,60 +106,27 @@ const Signin = () => {
         console.log(email);
         console.log(credential);
         if (error.code === "auth/account-exists-with-different-credential") {
-          
-          fetchSignInMethodsForEmail(auth,email).then(function(methods){
-            console.log(methods)
-          })
+          var pendingCred = error.credential;
+          console.log(pendingCred)
+          // fetchSignInMethodsForEmail(auth, email).then(function (methods) {
+          //   console.log(methods);
+          //   if (methods[0] === "password") {
+          //     console.log("here");
+          //   }
+
+          //   // var provider = getProviderForProviderId(methods[0]);
+          //   // console.log(provider)
+          // });
         }
       });
+  };
 
-    // Step 1.
-    // User tries to sign in to GitHub.
-    // signInWithPopup(auth, providerGit)
-    //   .catch(function (error) {
-    //     // An error happened.
-    //     if (error.code === "auth/account-exists-with-different-credential") {
-    //       // Step 2.
-    //       // User's email already exists.
-    //       // The pending GitHub credential.
-    //       var pendingCred = error.credential;
-    //       // The provider account's email address.
-    //       var email = error.email;
-    //       console.log(pendingCred)
-    //       console.log(email)
-
-    //       // Get sign-in methods for this email.
-    //       // auth.fetchSignInMethodsForEmail(email).then(function (methods) {
-    //       //   // Step 3.
-    //       //   // If the user has several sign-in methods,
-    //       //   // the first method in the list will be the "recommended" method to use.
-    //       //   // if (methods[0] === "password") {
-    //       //   //   // Asks the user their password.
-    //       //   //   // In real scenario, you should handle this asynchronously.
-    //       //   //   var password = promptUserForPassword(); // TODO: implement promptUserForPassword.
-    //       //   //   auth
-    //       //   //     .signInWithEmailAndPassword(email, password)
-    //       //   //     .then(function (result) {
-    //       //   //       // Step 4a.
-    //       //   //       return result.user.linkWithCredential(pendingCred);
-    //       //   //     })
-    //       //   //     .then(function () {
-    //       //   //       // GitHub account successfully linked to the existing Firebase user.
-    //       //   //       goToApp();
-    //       //   //     });
-    //       //   //   return;
-    //       //   // }
-    //       //   // var provider = getProviderForProviderId(methods[0]);
-    //       //   // auth.signInWithPopup(provider).then(function (result) {
-    //       //   //   result.user
-    //       //   //     .linkAndRetrieveDataWithCredential(pendingCred)
-    //       //   //     .then(function (usercred) {
-    //       //   //       goToApp();
-    //       //   //     });
-    //       //   // });
-    //       // });
-    //     }
-    //   });
+  const uiConfig = {
+    signInFlow: "popup",
+    signInOptions: [GithubAuthProvider.PROVIDER_ID],
+    callbacks: {
+      signInSuccess: () => false,
+    },
   };
 
   // const signInWithGoogle = () => {
@@ -271,6 +243,9 @@ const Signin = () => {
                 <button onClick={signInWithGitHub}>Git Hub</button>
               </li> */}
             </ul>
+            {/* <div>
+              <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
+            </div> */}
           </Col>
           <Col className="col-0 col-lg-3"></Col>
         </Row>

@@ -1,14 +1,61 @@
 import styled from "styled-components";
+export const Header = styled.div`
+color: white;
+background-color: black;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+padding: 20px;
+font-size: 25px;
+font-weight: bold;
+box-shadow: 0 3px 6px 0 #555;
+`;
+export const AppNameComponent = styled.div`
+display: flex;
+align-items: center;
+font-size: 22px;
+`;
 
-export const RecipeListContainer = styled.div`
+export const SearchComponent = styled.div`
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+background-color: white;
+padding:10px;
+border-radius: 6px;
+width: 50%;
+@media (max-width: 991px){
+    width: 100%;
+}
+`;
+
+export const SearchInput = styled.input`
+border: none;
+outline: none;
+margin-right: 15px;
+font-size: 16px;
+font-weight: bold;
+width: 100%;
+`;
+export const SearchStyleIcon = { color: "black", cursor: "pointer" };
+
+
+export const CaloriesContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+//   justify-content: space-between;
   flex-wrap: wrap;
   padding: 30px;
-  just-content: space-evenly;
   gap: 30px;
+  @media (max-width: 991px){
+    justify-content: center;
+  }
 `;
+
+// --------------------------------------------
+
 export const RecipeContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,6 +63,7 @@ export const RecipeContainer = styled.div`
   padding: 10px;
   width: 300px;
   box-shadow: 0 3px 10px 0 #aaa;
+  border-radius: 10px;
 `;
 
 export const CoverImage = styled.img`
@@ -23,7 +71,7 @@ export const CoverImage = styled.img`
 `;
 
 export const RecipeName = styled.span`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: black;
   margin: 10px 0;

@@ -34,16 +34,32 @@ const Header = () => {
     navigate("/GetRecipes");
   };
 
+  const CalorieCalc = () => {
+    setActiveTab("link6");
+    navigate("/calorieFinding");
+  };
+
+  const MealPlanPath = () => {
+    setActiveTab("link5");
+    navigate("/mealPlanPage");
+  };
+
+  const removeActiveLink = () => {
+    setActiveTab("")
+  }
+
   const activeClassLink1 = activeTab === "link1" ? "active" : "";
   const activeClassLink2 = activeTab === "link2" ? "active" : "";
   const activeClassLink3 = activeTab === "link3" ? "active" : "";
   const activeClassLink4 = activeTab === "link4" ? "active" : "";
+  const activeClassLink5 = activeTab === "link5" ? "active" : "";
+  const activeClassLink6 = activeTab === "link6" ? "active" : "";
+  
 
   const checkStatus = () => {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
-        console.log("success");
         doLogout();
       })
       .catch((error) => {
@@ -121,17 +137,27 @@ const Header = () => {
               {!isLoggedIn() && (
                 <Nav.Link
                   onClick={functionSignIn}
-                  className={`nav-link navigationLink ${activeClassLink1}`}
+                  className={`nav-link`}
                 >
-                  Sign In
+                  
+                  <span
+                    className={`d-inline-block  ${activeClassLink1} navigationLink`}
+                  >
+                    Sign In
+                  </span>
                 </Nav.Link>
               )}
               {!isLoggedIn() && (
                 <Nav.Link
-                  className={`nav-link navigationLink ${activeClassLink2}`}
+                  className={`nav-link`}
                   onClick={functionSignOut}
                 >
-                  Sign Up
+                  <span
+                    className={`d-inline-block  ${activeClassLink2} navigationLink`}
+                  >
+                    Sign Up
+                  </span>
+                  
                 </Nav.Link>
               )}
 
@@ -143,35 +169,53 @@ const Header = () => {
               {/* () =>  */}
 
               {isLoggedIn() && (
-                <Nav.Link
-                  className={`nav-link navigationLink ${activeClassLink3}`}
-                  onClick={HomePath}
-                >
-                  Home
+                <Nav.Link className={`nav-link`} onClick={HomePath}>
+                  <span
+                    className={`d-inline-block ${activeClassLink3} navigationLink`}
+                  >
+                    Home
+                  </span>
                 </Nav.Link>
               )}
 
               {isLoggedIn() && (
                 // <Nav.Link className={`nav-link navigationLink ${activeClassLink3}`} onClick={HomePath}>Home</Nav.Link>
-                <Nav.Link
-                  className={`nav-link navigationLink ${activeClassLink4}`}
-                  onClick={RecipesPath}
-                >
-                  Recipes
+                <Nav.Link className={`nav-link `} onClick={RecipesPath}>
+                  <span
+                    className={`d-inline-block ${activeClassLink4} navigationLink`}
+                  >
+                    Ingredients
+                  </span>
                 </Nav.Link>
               )}
 
               {isLoggedIn() && (
-                <NavDropdown title="More" id="basic-nav-dropdown">
-                  <NavDropdown.Item onClick={() => navigate("/mealPlanPage")}>
-                    Meal Plan
+                <Nav.Link className={`nav-link `} onClick={CalorieCalc}>
+                  <span
+                    className={`d-inline-block ${activeClassLink6} navigationLink`}
+                  >
+                    Calories
+                  </span>
+                </Nav.Link>
+              )}
+
+              {isLoggedIn() && (
+                // <Nav.Link className={`nav-link navigationLink ${activeClassLink3}`} onClick={HomePath}>Home</Nav.Link>
+                <Nav.Link className={`nav-link `} onClick={MealPlanPath}>
+                  <span
+                    className={`d-inline-block ${activeClassLink5} navigationLink`}
+                  >
+                    Meal Planner
+                  </span>
+                </Nav.Link>
+              )}
+
+              {isLoggedIn() && (
+                <NavDropdown title="More" id="basic-nav-dropdown" onClick={removeActiveLink}>
+                  <NavDropdown.Item onClick={() => navigate("/GetTestPage")}>
+                    Wine Recommendations
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-
-                  <NavDropdown.Item onClick={() => navigate("/GetTestPage")}>
-                    Test Page
-                  </NavDropdown.Item>
-
                   <NavDropdown.Item onClick={checkStatus}>
                     Sign Out
                   </NavDropdown.Item>
@@ -186,92 +230,3 @@ const Header = () => {
 };
 
 export default Header;
-
-{
-  /* <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav> */
-}
-
-{
-  /* <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-      <Container>
-        <Navbar.Brand
-          onClick={() => {
-            navigate("/");
-          }}
-          className="d-flex align-items-center"
-          style={{ cursor: "pointer" }}
-        >
-          Spoonacular
-          <GiSpoon size={32} />
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="ms-auto">
-            {!isLoggedIn() && (
-              <Nav.Link
-                onClick={() => navigate("/signIn")}
-                className="navigationLink"
-              >
-                Sign In
-              </Nav.Link>
-            )}
-            {!isLoggedIn() && (
-              <Nav.Link onClick={() => navigate("/signUp")}>Sign Up</Nav.Link>
-            )}
-
-            {isLoggedIn() && (
-              <Nav.Link className="d-none d-lg-flex">
-                Hello, {username}
-              </Nav.Link>
-            )}
-
-            {isLoggedIn() && (
-              <Nav.Link onClick={() => navigate("/home")}>Home</Nav.Link>
-            )}
-            {isLoggedIn() && (
-              <NavDropdown title="More" id="basic-nav-dropdown">
-                <NavDropdown.Item onClick={() => navigate("/GetRecipes")}>
-                  Recipes
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => navigate("/mealPlanPage")}>
-                  Meal Plan
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-
-                <NavDropdown.Item onClick={() => navigate("/GetTestPage")}>
-                  Test Page
-                </NavDropdown.Item>
-
-                <NavDropdown.Item onClick={checkStatus}>
-                  Sign Out
-                </NavDropdown.Item>
-              </NavDropdown>
-            )}
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar> */
-}
